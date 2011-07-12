@@ -61,7 +61,9 @@ public class CassandraHostRetryService extends BackgroundCassandraHostService {
     executor.submit(new Runnable() {
       @Override
       public void run() {
-        if(verifyConnection(cassandraHost)) {
+        boolean reconnected = verifyConnection(cassandraHost);
+        log.info("Downed Host retry status {} with host: {}", reconnected, cassandraHost.getName());
+        if(reconnected) {
           connectionManager.addCassandraHost(cassandraHost);
           downedHostQueue.remove(cassandraHost);
           return;
